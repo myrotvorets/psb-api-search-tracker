@@ -1,0 +1,14 @@
+*
+!.npmrc
+!.npmrc.local
+!.docker
+!src
+!package.json
+!package-lock.json
+!tsconfig.json
+!entrypoint.sh
+
+src/**/.git
+*.d.ts
+*.d.cts
+*.d.mts
