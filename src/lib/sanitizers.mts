@@ -39,5 +39,6 @@ export function sanitizePhone(s: string): string {
     return s
         .replace(/[^0-9+;,]/gu, '')
         .replace(/[;,]/gu, ' ')
-        .replace(/\s+$/u, ' ');
+        .replace(/\s+/u, ' ')
+        .trim();
 }
