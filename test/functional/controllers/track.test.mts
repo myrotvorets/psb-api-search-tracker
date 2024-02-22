@@ -21,7 +21,7 @@ const dummyBody = {
     src: 1,
 };
 
-describe('DecodeController', function () {
+describe('TrackController', function () {
     let app: Express;
 
     before(async function () {
