@@ -96,13 +96,14 @@ function isUnroutableIPv6(valhi: bigint, vallo: bigint): boolean {
 }
 
 function isUnroutableIP(ip: string): boolean {
+    const bin = inet_pton(ip);
+
     /* c8 ignore start */
-    if (!isIP(ip)) {
+    if (!bin) {
         throw new TypeError('Invalid IP address');
     }
     /* c8 ignore stop */
 
-    const bin = inet_pton(ip);
     if (bin.length === 4) {
         return isUnroutableIPv4(bin.readUInt32BE(0));
     }

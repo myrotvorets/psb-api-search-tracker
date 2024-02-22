@@ -74,7 +74,7 @@ export class TrackingService implements TrackingServiceInterface {
             search_id: searchID,
             source_id: sourceID,
             dt: Math.floor(Date.now() / 1000),
-            ipaddr: inet_pton(ip),
+            ipaddr: inet_pton(ip)!,
             loc_id: locationID,
             piwik_id: piwikID,
         });
