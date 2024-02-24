@@ -1,5 +1,4 @@
 import type { Knex } from 'knex';
-import { PiwikModel } from '../models/piwik.mjs';
 import { SearchModel } from '../models/search.mjs';
 import { SearchQueryModel } from '../models/searchquery.mjs';
 
@@ -8,7 +7,6 @@ interface ModelServiceOptions {
 }
 
 export interface Models {
-    piwik: PiwikModel;
     search: SearchModel;
     searchQuery: SearchQueryModel;
 }
@@ -26,7 +24,6 @@ export class ModelService {
     ): Promise<T> {
         return this._db.transaction<T>((trx) => {
             const models: Models = {
-                piwik: new PiwikModel({ db: trx }),
                 search: new SearchModel({ db: trx }),
                 searchQuery: new SearchQueryModel({ db: trx }),
             };

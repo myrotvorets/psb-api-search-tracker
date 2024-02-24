@@ -6,7 +6,7 @@ export interface Search {
     dt: number;
     ipaddr: Buffer;
     loc_id: number | null;
-    piwik_id: number | null;
+    piwik: string | null;
 }
 
 interface ModelOptions {

@@ -1,7 +1,6 @@
 import type { Knex } from 'knex';
 import { SearchModel } from '../../src/models/search.mjs';
 import { SearchQueryModel } from '../../src/models/searchquery.mjs';
-import { PiwikModel } from '../../src/models/piwik.mjs';
 
 export async function up({ schema }: Knex): Promise<void> {
     const table = SearchModel.tableName;
@@ -14,10 +13,8 @@ export async function up({ schema }: Knex): Promise<void> {
             table.integer('dt').unsigned().notNullable();
             table.binary('ipaddr', 16).notNullable();
             table.integer('loc_id').unsigned().nullable();
-            table.integer('piwik_id').unsigned().nullable();
-
+            table.string('piwik').nullable();
             table.foreign('search_id').references(`${SearchQueryModel}.id`).onUpdate('CASCADE').onDelete('CASCADE');
-            table.foreign('piwik_id').references(`${PiwikModel.tableName}.id`).onUpdate('CASCADE').onDelete('SET NULL');
         });
     }
 }

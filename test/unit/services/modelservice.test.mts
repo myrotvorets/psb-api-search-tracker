@@ -5,7 +5,6 @@ import { container, initializeContainer } from '../../../src/lib/container.mjs';
 import { ModelService } from '../../../src/services/modelservice.mjs';
 import { SearchModel } from '../../../src/models/search.mjs';
 import { SearchQueryModel } from '../../../src/models/searchquery.mjs';
-import { PiwikModel } from '../../../src/models/piwik.mjs';
 
 describe('ModelService', function () {
     let service: ModelService;
@@ -32,7 +31,7 @@ describe('ModelService', function () {
             let isTrx: boolean | undefined;
             tracker.on('query', (query, step) => {
                 lastStep = step;
-                expect(step).to.be.lessThanOrEqual(5);
+                expect(step).to.be.within(1, 4);
                 expect(query.transacting).to.be.true;
                 switch (step) {
                     case 1:
@@ -42,20 +41,15 @@ describe('ModelService', function () {
 
                     case 2:
                         expect(query.method).to.equal('first');
-                        expect(query.sql).to.contain(PiwikModel.tableName);
-                        break;
-
-                    case 3:
-                        expect(query.method).to.equal('first');
                         expect(query.sql).to.contain(SearchQueryModel.tableName);
                         break;
 
-                    case 4:
+                    case 3:
                         expect(query.method).to.equal('insert');
                         expect(query.sql).to.contain(SearchModel.tableName);
                         break;
 
-                    case 5:
+                    case 4:
                         expect(query.method).to.be.undefined;
                         expect(query.sql).to.equal('COMMIT;');
                         break;
@@ -69,7 +63,6 @@ describe('ModelService', function () {
 
             await service.transaction(async (trx, models) => {
                 isTrx = trx.isTransaction;
-                await models.piwik.byCode('0123456789abcdef');
                 await models.searchQuery.find({
                     name: '',
                     dob: '',
@@ -84,12 +77,12 @@ describe('ModelService', function () {
                     dt: 0,
                     ipaddr: Buffer.from('\0\0\0\0'),
                     loc_id: null,
-                    piwik_id: null,
+                    piwik: null,
                 });
             });
 
             expect(isTrx).to.be.true;
-            expect(lastStep).to.equal(5);
+            expect(lastStep).to.equal(4);
         });
 
         it('should support read-only transactions', async function () {
