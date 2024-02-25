@@ -5,29 +5,45 @@ import type { Knex } from 'knex';
 
 interface DbEnv {
     NODE_ENV: string;
-    KNEX_DRIVER: string;
-    KNEX_DATABASE: string;
-    KNEX_HOST: string;
-    KNEX_USER: string;
-    KNEX_PASSWORD: string;
-    KNEX_CONN_LIMIT: number;
+    KNEX_DATABASE_DRIVER: string;
+    KNEX_DATABASE_NAME: string;
+    KNEX_DATABASE_HOST: string;
+    KNEX_DATABASE_USER: string;
+    KNEX_DATABASE_PASSWORD: string;
+    KNEX_DATABASE_CONN_LIMIT: number;
 }
 
-function getEnvironment(environment: NodeJS.Dict<string>): Readonly<DbEnv> {
+interface ManticoreEnv {
+    NODE_ENV: string;
+    KNEX_MANTICORE_DRIVER: string;
+    KNEX_MANTICORE_HOST: string;
+    KNEX_MANTICORE_CONN_LIMIT: number;
+}
+
+function getDatabaseEnvironment(environment: NodeJS.Dict<string>): Readonly<DbEnv> {
     return cleanEnv(environment, {
         NODE_ENV: str({ default: 'development' }),
-        KNEX_DRIVER: str({ default: 'mysql2', choices: ['mysql2'] }), // Run `npm i driver` if any other driver is needed
-        KNEX_DATABASE: str(),
-        KNEX_HOST: str({ default: 'localhost' }),
-        KNEX_USER: str({ default: '' }),
-        KNEX_PASSWORD: str({ default: '' }),
-        KNEX_CONN_LIMIT: num({ default: 2 }),
+        KNEX_DATABASE_DRIVER: str({ default: 'mysql2', choices: ['mysql2'] }), // Run `npm i driver` if any other driver is needed
+        KNEX_DATABASE_NAME: str(),
+        KNEX_DATABASE_HOST: str({ default: 'localhost' }),
+        KNEX_DATABASE_USER: str({ default: '' }),
+        KNEX_DATABASE_PASSWORD: str({ default: '' }),
+        KNEX_DATABASE_CONN_LIMIT: num({ default: 2 }),
     });
 }
 
-export function buildKnexConfig(environment: NodeJS.Dict<string> = process.env): Knex.Config {
+function getManticoreEnvironment(environment: NodeJS.Dict<string>): Readonly<ManticoreEnv> {
+    return cleanEnv(environment, {
+        NODE_ENV: str({ default: 'development' }),
+        KNEX_MANTICORE_DRIVER: str({ default: '', choices: ['', 'mysql2'] }),
+        KNEX_MANTICORE_HOST: str({ default: '' }),
+        KNEX_MANTICORE_CONN_LIMIT: num({ default: 2 }),
+    });
+}
+
+export function buildKnexDatabaseConfig(environment: NodeJS.Dict<string> = process.env): Knex.Config {
     const base = dirname(fileURLToPath(import.meta.url));
-    const env = getEnvironment(environment);
+    const env = getDatabaseEnvironment(environment);
 
     const config: Knex.Config = {
         asyncStackTraces: ['development', 'test'].includes(env.NODE_ENV),
@@ -42,26 +58,61 @@ export function buildKnexConfig(environment: NodeJS.Dict<string> = process.env):
         },
     };
 
-    if (env.KNEX_DRIVER === 'mysql2') {
+    if (env.KNEX_DATABASE_DRIVER === 'mysql2') {
         return {
             ...config,
             client: 'mysql2',
             connection: {
-                database: env.KNEX_DATABASE,
-                host: env.KNEX_HOST,
-                user: env.KNEX_USER,
-                password: env.KNEX_PASSWORD,
+                database: env.KNEX_DATABASE_NAME,
+                host: env.KNEX_DATABASE_HOST,
+                user: env.KNEX_DATABASE_USER,
+                password: env.KNEX_DATABASE_PASSWORD,
                 dateStrings: true,
                 charset: 'utf8mb4',
             },
             pool: {
                 min: 0,
-                max: env.KNEX_CONN_LIMIT,
+                max: env.KNEX_DATABASE_CONN_LIMIT,
             },
         };
         /* c8 ignore start */
     }
 
-    throw new Error(`Unsupported driver ${env.KNEX_DRIVER}`);
+    throw new Error(`Unsupported driver ${env.KNEX_DATABASE_DRIVER}`);
+}
+/* c8 ignore stop */
+
+export function buildKnexManticoreConfig(environment: NodeJS.Dict<string> = process.env): Knex.Config | null {
+    const env = getManticoreEnvironment(environment);
+
+    if (!env.KNEX_MANTICORE_DRIVER || !env.KNEX_MANTICORE_HOST) {
+        return null;
+    }
+
+    const config: Knex.Config = {
+        asyncStackTraces: ['development', 'test'].includes(env.NODE_ENV),
+        pool: {
+            min: 0,
+            max: env.KNEX_MANTICORE_CONN_LIMIT,
+        },
+    };
+
+    if (env.KNEX_MANTICORE_DRIVER === 'mysql2') {
+        return {
+            ...config,
+            client: 'mysql2',
+            connection: {
+                database: '',
+                host: env.KNEX_MANTICORE_HOST,
+                user: '',
+                password: '',
+                dateStrings: true,
+                charset: 'utf8mb4',
+            },
+        };
+        /* c8 ignore start */
+    }
+
+    throw new Error(`Unsupported driver ${env.KNEX_MANTICORE_DRIVER}`);
 }
 /* c8 ignore stop */

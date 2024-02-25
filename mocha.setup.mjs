@@ -4,8 +4,8 @@ if (!process.env['RUN_INTEGRATION_TESTS']) {
     process.env = {
         NODE_ENV: 'test',
         OTEL_SDK_DISABLED: 'true',
-        KNEX_DRIVER: 'mysql2',
-        KNEX_DATABASE: 'fake',
+        KNEX_DATABASE_DRIVER: 'mysql2',
+        KNEX_DATABASE_NAME: 'fake',
     };
 }
 

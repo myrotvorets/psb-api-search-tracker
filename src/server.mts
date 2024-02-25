@@ -27,6 +27,7 @@ export function configureApp(app: Express): ReturnType<typeof initializeContaine
             const env = container.resolve('environment');
             const base = dirname(fileURLToPath(import.meta.url));
             const db = container.resolve('db');
+            const manticore = container.resolve('manticore');
 
             app.use(
                 requestDurationMiddleware(requestDurationHistogram),
@@ -34,7 +35,7 @@ export function configureApp(app: Express): ReturnType<typeof initializeContaine
                 requestLoggerMiddleware('search-tracker', loggerFromRequest),
             );
 
-            app.use('/monitoring', monitoringController(db));
+            app.use('/monitoring', monitoringController(db, manticore));
 
             app.use(
                 json(),

@@ -3,7 +3,7 @@ import type { NextFunction, Request, Response } from 'express';
 import * as knexpkg from 'knex';
 import { type Logger, type Meter, type Tracer, getLogger, getMeter, getTracer } from '@myrotvorets/otel-utils';
 import { environment } from './environment.mjs';
-import { buildKnexConfig } from '../knexfile.mjs';
+import { buildKnexDatabaseConfig, buildKnexManticoreConfig } from '../knexfile.mjs';
 import type { TrackingServiceInterface } from '../services/trackingserviceinterface.mjs';
 import { ModelService } from '../services/modelservice.mjs';
 import { TrackingService } from '../services/trackingservice.mjs';
@@ -14,6 +14,7 @@ export interface Container {
     meter: Meter;
     tracer: Tracer;
     db: knexpkg.Knex;
+    manticore: knexpkg.Knex | null;
     modelService: ModelService;
     trackService: TrackingServiceInterface;
 }
@@ -56,7 +57,14 @@ function createTracer(): Tracer {
 
 function createDatabase(): knexpkg.Knex {
     const { knex } = knexpkg.default;
-    return knex(buildKnexConfig());
+    return knex(buildKnexDatabaseConfig());
+}
+
+function createManticore(): knexpkg.Knex | null {
+    const { knex } = knexpkg.default;
+    const config = buildKnexManticoreConfig();
+    /* c8 ignore next */
+    return config ? knex(config) : null;
 }
 
 export function initializeContainer(): typeof container {
@@ -68,6 +76,10 @@ export function initializeContainer(): typeof container {
         db: asFunction(createDatabase)
             .singleton()
             .disposer((db) => db.destroy()),
+        manticore: asFunction(createManticore)
+            .singleton()
+            /* c8 ignore next */
+            .disposer((manticore) => manticore?.destroy()),
         trackService: asClass(TrackingService).singleton(),
         modelService: asClass(ModelService).singleton(),
     });

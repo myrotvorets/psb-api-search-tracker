@@ -1,5 +1,5 @@
 import * as knexpkg from 'knex';
-import { buildKnexConfig } from '../src/knexfile.mjs';
+import { buildKnexDatabaseConfig } from '../src/knexfile.mjs';
 
 try {
     const { knex } = knexpkg.default;
@@ -10,7 +10,7 @@ try {
         process.exit(1);
     }
 
-    const db = knex(buildKnexConfig());
+    const db = knex(buildKnexDatabaseConfig());
     if (env === 'test') {
         process.stdout.write('Rolling back all migrations, if any\n');
         await db.migrate.rollback(undefined, true);

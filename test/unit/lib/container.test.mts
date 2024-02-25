@@ -17,6 +17,7 @@ describe('Container', function () {
             expect(container.resolve('tracer')).to.respondTo('startActiveSpan');
             expect(container.resolve('meter')).to.respondTo('createCounter');
             expect(container.resolve('db')).to.be.a('function').that.has.property('name', 'knex');
+            expect(container.resolve('manticore')).to.be.null;
             expect(container.resolve('modelService')).to.be.instanceOf(ModelService);
             expect(container.resolve('trackService')).to.be.instanceOf(TrackingService);
         });

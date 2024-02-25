@@ -6,19 +6,25 @@ import * as knexpkg from 'knex';
 import mockKnex from 'mock-knex';
 import { createApp } from '../../../src/server.mjs';
 import { healthChecker, monitoringController } from '../../../src/controllers/monitoring.mjs';
-import { buildKnexConfig } from '../../../src/knexfile.mjs';
+import { buildKnexDatabaseConfig, buildKnexManticoreConfig } from '../../../src/knexfile.mjs';
 
 describe('MonitoringController', function () {
     let app: Express;
     let db: knexpkg.Knex;
+    let manticore: knexpkg.Knex;
 
     before(function () {
         const { knex } = knexpkg.default;
-        db = knex(buildKnexConfig({ KNEX_DATABASE: 'fake' }));
+        db = knex(buildKnexDatabaseConfig({ KNEX_DATABASE_NAME: 'fake' }));
         mockKnex.mock(db);
 
+        manticore = knex(
+            buildKnexManticoreConfig({ KNEX_MANTICORE_HOST: 'example.local', KNEX_MANTICORE_DRIVER: 'mysql2' })!,
+        );
+        mockKnex.mock(manticore);
+
         app = createApp();
-        app.use('/monitoring', monitoringController(db));
+        app.use('/monitoring', monitoringController(db, manticore));
     });
 
     beforeEach(function () {
@@ -28,12 +34,12 @@ describe('MonitoringController', function () {
 
     after(function () {
         mockKnex.unmock(db);
-        return db.destroy();
+        mockKnex.unmock(manticore);
+        return Promise.all([db.destroy(), manticore.destroy()]);
     });
 
     afterEach(function () {
         process.removeAllListeners('SIGTERM');
-        mockKnex.getTracker().uninstall();
     });
 
     const checker200 = (endpoint: string): Promise<unknown> =>
