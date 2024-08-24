@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable sonarjs/no-hardcoded-ip */
 import { expect } from 'chai';
 import { isGoodIP, isPiwikCode, isValidIP } from '../../../src/lib/validators.mjs';
 

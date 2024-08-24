@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { expect } from 'chai';
 import { container, initializeContainer } from '../../../src/lib/container.mjs';
 import { ModelService } from '../../../src/services/modelservice.mjs';

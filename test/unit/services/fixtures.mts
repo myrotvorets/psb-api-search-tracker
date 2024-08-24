@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-hardcoded-ip */
 import type { SearchParams, TrackingInfo } from '../../../src/services/trackingserviceinterface.mjs';
 import { SearchModel } from '../../../src/models/search.mjs';
 import { SearchQueryModel } from '../../../src/models/searchquery.mjs';

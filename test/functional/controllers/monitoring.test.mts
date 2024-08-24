@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/assertions-in-tests */
 /* eslint-disable import/no-named-as-default-member */
 import { expect } from 'chai';
 import { type Express } from 'express';
@@ -28,6 +29,7 @@ describe('MonitoringController', function () {
     });
 
     beforeEach(function () {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(healthChecker).not.to.be.undefined;
         healthChecker!.shutdownRequested = false;
     });

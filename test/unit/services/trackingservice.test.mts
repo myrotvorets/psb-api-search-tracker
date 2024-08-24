@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-nested-functions */
+/* eslint-disable sonarjs/assertions-in-tests */
 /* eslint-disable import/no-named-as-default-member */
 import { expect } from 'chai';
 import mockKnex from 'mock-knex';
