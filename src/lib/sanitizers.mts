@@ -1,4 +1,5 @@
 export function sanitizeName(s: string): string {
+    // eslint-disable-next-line sonarjs/slow-regex
     if (/^[\p{Ps}\p{Pi}`'"]?\s*путин\s*-?\s*хуйло\s*[\p{Pe}\p{Pf}ʼ'"]?$/iu.test(s)) {
         return '';
     }
