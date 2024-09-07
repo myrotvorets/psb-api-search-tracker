@@ -9,6 +9,7 @@ on:
       - master
   schedule:
     - cron: "27 0 * * 5"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -51,3 +52,5 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@4dd16135b69a43b6c8efb853346f8437d92d3c93 # v3.26.6
+        with:
+          category: "/language:${{ matrix.language }}"
