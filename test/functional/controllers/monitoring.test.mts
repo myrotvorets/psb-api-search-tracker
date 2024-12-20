@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/assertions-in-tests */
+import type { RequestListener } from 'node:http';
 import { expect } from 'chai';
-import { type Express } from 'express';
 import request from 'supertest';
 import * as knexpkg from 'knex';
 import mockKnex from 'mock-knex';
@@ -9,7 +9,7 @@ import { healthChecker, monitoringController } from '../../../src/controllers/mo
 import { buildKnexDatabaseConfig, buildKnexManticoreConfig } from '../../../src/knexfile.mjs';
 
 describe('MonitoringController', function () {
-    let app: Express;
+    let app: RequestListener;
     let db: knexpkg.Knex;
     let manticore: knexpkg.Knex;
 
@@ -23,8 +23,9 @@ describe('MonitoringController', function () {
         );
         mockKnex.mock(manticore);
 
-        app = createApp();
-        app.use('/monitoring', monitoringController(db, manticore));
+        const application = createApp();
+        application.use('/monitoring', monitoringController(db, manticore));
+        app = application as RequestListener;
     });
 
     beforeEach(function () {
