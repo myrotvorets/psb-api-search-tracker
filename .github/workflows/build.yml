@@ -25,7 +25,7 @@ jobs:
           submodules: true
 
       - name: Build and test
-        uses: myrotvorets/composite-actions/build-test-nodejs@461a45375fc25e72215339dad366374fdb3f08d6 # master
+        uses: myrotvorets/composite-actions/build-test-nodejs@69b1ac6383174be7c165a81afcef96f7d07e1e01 # master
         with:
           node-version: ${{ matrix.node.version }}
           registry-url: https://npm.pkg.github.com
