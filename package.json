@@ -73,7 +73,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/myrotvorets/psb-api-dzhura.git"
+    "url": "git+https://github.com/myrotvorets/psb-api-search-tracker.git"
   },
   "bugs": {
     "url": "https://github.com/myrotvorets/psb-api-dzhura/issues"
