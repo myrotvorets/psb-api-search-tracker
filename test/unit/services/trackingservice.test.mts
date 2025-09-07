@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/no-nested-functions */
-/* eslint-disable sonarjs/assertions-in-tests */
 import { expect } from 'chai';
 import mockKnex from 'mock-knex';
 import { container, initializeContainer } from '../../../src/lib/container.mjs';
