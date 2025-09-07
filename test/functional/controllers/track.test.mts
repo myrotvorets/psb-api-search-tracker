@@ -5,7 +5,7 @@ import mockKnex from 'mock-knex';
 import { expect } from 'chai';
 import { configureApp, createApp } from '../../../src/server.mjs';
 import { container } from '../../../src/lib/container.mjs';
-import { TrackingRequestBody } from '../../../src/controllers/track.mjs';
+import { type TrackingRequestBody } from '../../../src/controllers/track.mjs';
 
 const dummyBody = {
     name: '',
