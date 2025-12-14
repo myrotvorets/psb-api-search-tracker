@@ -28,7 +28,7 @@ jobs:
           submodules: true
 
       - name: Run SonarCloud analysis
-        uses: myrotvorets/composite-actions/node-sonarscan@96017f90942616677d9fdad3cf29cefcec02d795 # master
+        uses: myrotvorets/composite-actions/node-sonarscan@3979e6120a77babddec6e34f9008f4ed8d611c61 # master
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           registry-url: https://npm.pkg.github.com
